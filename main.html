@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BlazeIt — System Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:#060b18;
+  font-family:'Exo 2',sans-serif;
+  color:#e2e8f0;
+  padding:24px;
+  min-height:100vh;
+}
+.page{
+  width:1100px;
+  margin:0 auto;
+  background:#080d1e;
+  border:1px solid #1e2d52;
+  border-radius:12px;
+  padding:28px 32px 32px;
+  position:relative;
+  overflow:hidden;
+}
+.page::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#6366f1,#06b6d4,#10b981,#f59e0b,#ef4444);
+}
+/* ── HEADER ── */
+.header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;
+  padding-bottom:16px;
+  border-bottom:1px solid #1e2d52;
+}
+.header-left{}
+.project-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;color:#6366f1;
+  letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:4px;
+}
+.header h1{
+  font-family:'Rajdhani',sans-serif;
+  font-size:28px;font-weight:700;
+  color:#f1f5f9;letter-spacing:1px;
+}
+.header h1 span{color:#6366f1;}
+.header-right{text-align:right;}
+.header-right .label{font-size:10px;color:#64748b;font-family:'Share Tech Mono',monospace;letter-spacing:2px;}
+.header-right .val{font-size:12px;color:#94a3b8;margin-top:2px;}
+
+/* ── MAIN GRID ── */
+.arch-grid{
+  display:grid;
+  grid-template-columns:160px 1fr 170px;
+  grid-template-rows:auto auto auto;
+  gap:16px;
+  align-items:start;
+}
+
+/* ── SECTION TITLES ── */
+.sec-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:8px;
+  padding:4px 10px;
+  border-radius:4px;
+  display:inline-block;
+}
+
+/* ── USERS COLUMN ── */
+.users-col{grid-column:1;grid-row:1/3;}
+.users-box{
+  background:#0c1428;
+  border:1px solid #1e3a6e;
+  border-radius:8px;
+  padding:14px 12px;
+}
+.users-box .sec-title{background:#1e3a6e22;color:#60a5fa;}
+.user-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;
+  margin-bottom:6px;
+  background:#0f1d3d;
+  border:1px solid #1e3a6e;
+  border-radius:6px;
+  font-size:12px;color:#93c5fd;
+  font-weight:600;
+}
+.user-item:last-child{margin-bottom:0;}
+.user-icon{font-size:18px;width:24px;text-align:center;}
+
+/* ── CENTER COLUMN ── */
+.center-col{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;gap:14px;}
+
+/* ── FRONTEND ROW ── */
+.frontend-row{
+  background:#120d2e;
+  border:1px solid #4c1d95;
+  border-radius:8px;
+  padding:12px 14px;
+}
+.frontend-row .sec-title{background:#4c1d9522;color:#a78bfa;}
+.fe-modules{display:flex;gap:10px;flex-wrap:wrap;}
+.fe-box{
+  flex:1;min-width:130px;
+  background:#1a1040;
+  border:1px solid #6d28d9;
+  border-radius:6px;
+  padding:10px 12px;
+  text-align:center;
+}
+.fe-box .icon{font-size:22px;margin-bottom:4px;}
+.fe-box .name{font-size:11px;font-weight:700;color:#c4b5fd;font-family:'Rajdhani',sans-serif;letter-spacing:.5px;}
+.fe-box .tech{font-size:9px;color:#7c5cc4;margin-top:2px;font-family:'Share Tech Mono',monospace;}
+
+/* ── MIDDLEWARE ROW ── */
+.mid-row{
+  background:#0c1f1a;
+  border:1px solid #064e3b;
+  border-radius:8px;
+  padding:12px 14px;
+}
+.mid-row .sec-title{background:#064e3b33;color:#34d399;}
+.mid-modules{display:flex;gap:10px;}
+.mid-box{
+  flex:1;
+  background:#0a1f18;
+  border:1px solid #059669;
+  border-radius:6px;
+  padding:10px 12px;
+  text-align:center;
+}
+.mid-box .icon{font-size:20px;margin-bottom:4px;}
+.mid-box .name{font-size:11px;font-weight:700;color:#6ee7b7;font-family:'Rajdhani',sans-serif;}
+.mid-box .tech{font-size:9px;color:#047857;margin-top:2px;font-family:'Share Tech Mono',monospace;}
+
+/* ── SERVICES ROW ── */
+.svc-row{
+  background:#0d1826;
+  border:1px solid #1e40af;
+  border-radius:8px;
+  padding:12px 14px;
+}
+.svc-row .sec-title{background:#1e40af22;color:#60a5fa;}
+.svc-modules{display:flex;gap:10px;}
+.svc-box{
+  flex:1;
+  background:#0a1428;
+  border:1px solid #2563eb;
+  border-radius:6px;
+  padding:10px 12px;
+  text-align:center;
+}
+.svc-box .icon{font-size:20px;margin-bottom:4px;}
+.svc-box .name{font-size:11px;font-weight:700;color:#93c5fd;font-family:'Rajdhani',sans-serif;}
+.svc-box .tech{font-size:9px;color:#1d4ed8;margin-top:2px;font-family:'Share Tech Mono',monospace;}
+.svc-sub{font-size:9px;color:#3b82f6;margin-top:3px;line-height:1.4;}
+
+/* ── DB ROW ── */
+.db-row{
+  background:#1a1208;
+  border:1px solid #78350f;
+  border-radius:8px;
+  padding:12px 14px;
+}
+.db-row .sec-title{background:#78350f22;color:#fbbf24;}
+.db-modules{display:flex;gap:10px;}
+.db-box{
+  flex:1;
+  background:#140e06;
+  border:1px solid #b45309;
+  border-radius:6px;
+  padding:10px 12px;
+  text-align:center;
+}
+.db-box .icon{font-size:20px;margin-bottom:4px;}
+.db-box .name{font-size:11px;font-weight:700;color:#fcd34d;font-family:'Rajdhani',sans-serif;}
+.db-box .tech{font-size:9px;color:#92400e;margin-top:2px;font-family:'Share Tech Mono',monospace;}
+
+/* ── BLOCKCHAIN ROW ── */
+.chain-row{
+  background:#160b28;
+  border:1px solid #581c87;
+  border-radius:8px;
+  padding:12px 14px;
+}
+.chain-row .sec-title{background:#581c8722;color:#c084fc;}
+.chain-modules{display:flex;gap:10px;}
+.chain-box{
+  flex:1;
+  background:#100820;
+  border:1px solid #7e22ce;
+  border-radius:6px;
+  padding:10px 12px;
+  text-align:center;
+}
+.chain-box .icon{font-size:20px;margin-bottom:4px;}
+.chain-box .name{font-size:11px;font-weight:700;color:#d8b4fe;font-family:'Rajdhani',sans-serif;}
+.chain-box .tech{font-size:9px;color:#6b21a8;margin-top:2px;font-family:'Share Tech Mono',monospace;}
+
+/* ── THIRD PARTY COLUMN ── */
+.apis-col{grid-column:3;grid-row:1/3;}
+.apis-box{
+  background:#0c1428;
+  border:1px solid #1e3a6e;
+  border-radius:8px;
+  padding:14px 12px;
+}
+.apis-box .sec-title{background:#1e3a6e22;color:#f472b6;}
+.api-item{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;
+  margin-bottom:6px;
+  background:#130d22;
+  border:1px solid #4a1d96;
+  border-radius:6px;
+  font-size:11px;color:#e879f9;
+  font-weight:600;
+}
+.api-item .api-icon{font-size:16px;width:20px;text-align:center;}
+.api-item .api-info{display:flex;flex-direction:column;}
+.api-item .api-name{font-size:11px;color:#f0abfc;font-weight:700;}
+.api-item .api-desc{font-size:9px;color:#7c3aed;margin-top:1px;}
+
+/* ── ARROWS ── */
+.arrow-row{
+  grid-column:1/4;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:4px 0;
+}
+.arrow-label{
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px;color:#475569;
+  letter-spacing:1px;
+}
+.arrow-line{
+  flex:1;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#334155,transparent);
+  position:relative;
+}
+.arrow-line::after{
+  content:'▼';
+  position:absolute;
+  right:50%;transform:translateX(50%);
+  top:-8px;
+  font-size:10px;color:#334155;
+}
+
+/* ── FLOW ARROWS between columns ── */
+.conn-wrap{
+  grid-column:1/4;
+  display:grid;
+  grid-template-columns:160px 1fr 170px;
+  gap:16px;
+  align-items:center;
+  padding:2px 0;
+}
+.conn-center{
+  display:flex;justify-content:center;align-items:center;gap:8px;
+}
+.conn-arrow{
+  display:flex;flex-direction:column;align-items:center;
+  font-family:'Share Tech Mono',monospace;font-size:9px;
+  color:#334155;
+}
+.conn-arrow .arr{font-size:14px;color:#334155;}
+
+/* ── FOOTER ── */
+.footer-bar{
+  margin-top:20px;
+  padding-top:14px;
+  border-top:1px solid #1e2d52;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.legend-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:10px;color:#64748b;
+}
+.legend-dot{width:8px;height:8px;border-radius:2px;}
+
+/* ── CORE MODULES BOTTOM SECTION ── */
+.core-section{
+  grid-column:1/4;
+  margin-top:4px;
+}
+.core-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:13px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;
+  color:#94a3b8;
+  text-align:center;
+  margin-bottom:12px;
+  padding:6px;
+  border-top:1px solid #1e2d52;
+  border-bottom:1px solid #1e2d52;
+}
+.core-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+}
+.core-box{
+  background:#0c1020;
+  border-radius:8px;
+  padding:12px 10px;
+  text-align:center;
+  border:1px solid #1e2d52;
+  position:relative;
+  overflow:hidden;
+}
+.core-box::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+}
+.core-box.purple::before{background:#6366f1;}
+.core-box.teal::before{background:#06b6d4;}
+.core-box.green::before{background:#10b981;}
+.core-box.amber::before{background:#f59e0b;}
+.core-box.red::before{background:#ef4444;}
+.core-box.pink::before{background:#ec4899;}
+
+.core-box .cb-icon{font-size:24px;margin-bottom:6px;}
+.core-box .cb-name{
+  font-family:'Rajdhani',sans-serif;
+  font-size:11px;font-weight:700;
+  color:#e2e8f0;margin-bottom:4px;
+}
+.core-box .cb-items{
+  font-size:9px;color:#64748b;
+  line-height:1.6;
+  font-family:'Share Tech Mono',monospace;
+}
+
+/* USER -> CENTER arrow */
+.h-arrow{
+  display:flex;align-items:center;justify-content:center;
+  color:#334155;font-size:11px;padding:2px 0;
+}
+.h-arrow span{
+  font-family:'Share Tech Mono',monospace;
+  font-size:8px;color:#334155;
+  margin:0 4px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="project-tag">System Architecture</div>
+      <h1><span>Blaze</span>It — Gamified DeFi Platform</h1>
+    </div>
+    <div class="header-right">
+      <div class="label">MUFFAKHAM JAH COLLEGE OF ENGG. &amp; TECH.</div>
+      <div class="val">Dept. of CSE · Batch 2022–2026 · Guide: Ms. Afroze Begum</div>
+    </div>
+  </div>
+
+  <!-- MAIN ARCHITECTURE GRID -->
+  <div class="arch-grid">
+
+    <!-- USERS COLUMN -->
+    <div class="users-col">
+      <div class="users-box">
+        <div class="sec-title">👥 Users</div>
+        <div class="user-item"><span class="user-icon">🧑‍💻</span>Traders</div>
+        <div class="user-item"><span class="user-icon">🏆</span>Quest Players</div>
+        <div class="user-item"><span class="user-icon">🚀</span>Token Creators</div>
+        <div class="user-item"><span class="user-icon">📊</span>Analysts</div>
+        <div style="margin-top:12px;border-top:1px solid #1e3a6e;padding-top:10px;">
+          <div class="sec-title">📱 Devices</div>
+          <div class="user-item"><span class="user-icon">📱</span>Mobile</div>
+          <div class="user-item"><span class="user-icon">💻</span>Desktop</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER COLUMN -->
+    <div class="center-col">
+
+      <!-- FRONTEND -->
+      <div class="frontend-row">
+        <div class="sec-title">🖥️ Frontend Layer — React (Vite) · TypeScript · Tailwind CSS</div>
+        <div class="fe-modules">
+          <div class="fe-box">
+            <div class="icon">⇆</div>
+            <div class="name">Swipe UI</div>
+            <div class="tech">Framer Motion</div>
+            <div class="tech">buy · skip · watchlist</div>
+          </div>
+          <div class="fe-box">
+            <div class="icon">⚑</div>
+            <div class="name">Quest UI</div>
+            <div class="tech">Leaderboards</div>
+            <div class="tech">Prize Pools</div>
+          </div>
+          <div class="fe-box">
+            <div class="icon">▦</div>
+            <div class="name">Portfolio UI</div>
+            <div class="tech">Zustand State</div>
+            <div class="tech">P&amp;L Dashboard</div>
+          </div>
+          <div class="fe-box">
+            <div class="icon">✦</div>
+            <div class="name">Launchpad UI</div>
+            <div class="tech">Token Creation</div>
+            <div class="tech">Creator Tools</div>
+          </div>
+          <div class="fe-box">
+            <div class="icon">◉</div>
+            <div class="name">AI Insights UI</div>
+            <div class="tech">Sentiment View</div>
+            <div class="tech">Analytics</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLEWARE -->
+      <div class="mid-row">
+        <div class="sec-title">🔐 Auth &amp; Middleware Layer</div>
+        <div class="mid-modules">
+          <div class="mid-box">
+            <div class="icon">◈</div>
+            <div class="name">Wallet Adapter</div>
+            <div class="tech">@aptos-labs/wallet-adapter</div>
+            <div class="tech">Tx Signing · Identity</div>
+          </div>
+          <div class="mid-box">
+            <div class="icon">⊛</div>
+            <div class="name">Auth Service</div>
+            <div class="tech">Supabase Auth</div>
+            <div class="tech">Session · JWT</div>
+          </div>
+          <div class="mid-box">
+            <div class="icon">⟳</div>
+            <div class="name">API Gateway</div>
+            <div class="tech">Request Router</div>
+            <div class="tech">Rate Limiting</div>
+          </div>
+          <div class="mid-box">
+            <div class="icon">◎</div>
+            <div class="name">AI Engine</div>
+            <div class="tech">Sentiment Analysis</div>
+            <div class="tech">Market Insights</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BACKEND SERVICES -->
+      <div class="svc-row">
+        <div class="sec-title">⚙️ Backend Services — Supabase (PostgreSQL · Realtime · RLS)</div>
+        <div class="svc-modules">
+          <div class="svc-box">
+            <div class="icon">🔄</div>
+            <div class="name">Trade Service</div>
+            <div class="tech">token-data · swipe-events</div>
+            <div class="svc-sub">Watchlist · RLS Rules</div>
+          </div>
+          <div class="svc-box">
+            <div class="icon">🏁</div>
+            <div class="name">Quest Service</div>
+            <div class="tech">sessions · portfolios</div>
+            <div class="svc-sub">Realtime Sync · Rankings</div>
+          </div>
+          <div class="svc-box">
+            <div class="icon">👤</div>
+            <div class="name">User Service</div>
+            <div class="tech">profiles · holdings</div>
+            <div class="svc-sub">Storage · P&amp;L Records</div>
+          </div>
+          <div class="svc-box">
+            <div class="icon">🚀</div>
+            <div class="name">Launchpad Svc</div>
+            <div class="tech">token-registry</div>
+            <div class="svc-sub">Metadata · Images</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATABASE -->
+      <div class="db-row">
+        <div class="sec-title">🗄️ Database Layer</div>
+        <div class="db-modules">
+          <div class="db-box">
+            <div class="icon">🐘</div>
+            <div class="name">PostgreSQL</div>
+            <div class="tech">users · tokens · quests</div>
+          </div>
+          <div class="db-box">
+            <div class="icon">⚡</div>
+            <div class="name">Realtime</div>
+            <div class="tech">live-sync · websockets</div>
+          </div>
+          <div class="db-box">
+            <div class="icon">🔒</div>
+            <div class="name">Row Level Security</div>
+            <div class="tech">user-ownership · policies</div>
+          </div>
+          <div class="db-box">
+            <div class="icon">📦</div>
+            <div class="name">Storage</div>
+            <div class="tech">token-images · metadata</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCKCHAIN -->
+      <div class="chain-row">
+        <div class="sec-title">⛓️ Blockchain Layer — Aptos Network · Move Language</div>
+        <div class="chain-modules">
+          <div class="chain-box">
+            <div class="icon">👛</div>
+            <div class="name">Wallet / Identity</div>
+            <div class="tech">@aptos-labs/ts-sdk</div>
+          </div>
+          <div class="chain-box">
+            <div class="icon">📜</div>
+            <div class="name">Quest Contracts</div>
+            <div class="tech">blaze-contracts · Move</div>
+          </div>
+          <div class="chain-box">
+            <div class="icon">🪙</div>
+            <div class="name">Token Contracts</div>
+            <div class="tech">Launchpad · Mint ops</div>
+          </div>
+          <div class="chain-box">
+            <div class="icon">🎁</div>
+            <div class="name">Reward Distrib.</div>
+            <div class="tech">Prize Pool · Auto-release</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- THIRD PARTY APIs COLUMN -->
+    <div class="apis-col">
+      <div class="apis-box">
+        <div class="sec-title">🔌 Integrations</div>
+        <div class="api-item">
+          <span class="api-icon">🔗</span>
+          <div class="api-info">
+            <span class="api-name">Aptos Blockchain</span>
+            <span class="api-desc">On-chain execution</span>
+          </div>
+        </div>
+        <div class="api-item">
+          <span class="api-icon">🗃️</span>
+          <div class="api-info">
+            <span class="api-name">Supabase Cloud</span>
+            <span class="api-desc">DB · Auth · Storage</span>
+          </div>
+        </div>
+        <div class="api-item">
+          <span class="api-icon">⚡</span>
+          <div class="api-info">
+            <span class="api-name">Vercel CDN</span>
+            <span class="api-desc">Frontend deploy</span>
+          </div>
+        </div>
+        <div class="api-item">
+          <span class="api-icon">🐳</span>
+          <div class="api-info">
+            <span class="api-name">Docker</span>
+            <span class="api-desc">Prod containerisation</span>
+          </div>
+        </div>
+        <div class="api-item">
+          <span class="api-icon">🤖</span>
+          <div class="api-info">
+            <span class="api-name">AI / Sentiment</span>
+            <span class="api-desc">Market analytics</span>
+          </div>
+        </div>
+        <div class="api-item">
+          <span class="api-icon">📡</span>
+          <div class="api-info">
+            <span class="api-name">Token Price API</span>
+            <span class="api-desc">Live price feeds</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;border-top:1px solid #1e3a6e;padding-top:12px;">
+          <div class="sec-title" style="color:#94a3b8;">🔁 Data Flow</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:#475569;line-height:2;">
+            User → Wallet Auth<br/>
+            → API Gateway<br/>
+            → Backend Service<br/>
+            → PostgreSQL DB<br/>
+            → Aptos Chain<br/>
+            ← Realtime Sync<br/>
+            ← UI Update
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CORE MODULES SECTION -->
+  <div style="margin-top:18px;">
+    <div class="core-title">⬛ Core Technology Modules</div>
+    <div class="core-grid">
+      <div class="core-box purple">
+        <div class="cb-icon">⇆</div>
+        <div class="cb-name">Swipe Trading</div>
+        <div class="cb-items">React<br/>Framer Motion<br/>Gesture Events</div>
+      </div>
+      <div class="core-box teal">
+        <div class="cb-icon">⛓️</div>
+        <div class="cb-name">Blockchain</div>
+        <div class="cb-items">Aptos Network<br/>Move Language<br/>Smart Contracts</div>
+      </div>
+      <div class="core-box green">
+        <div class="cb-icon">🏆</div>
+        <div class="cb-name">Quest Engine</div>
+        <div class="cb-items">Competitions<br/>Leaderboards<br/>Prize Pools</div>
+      </div>
+      <div class="core-box amber">
+        <div class="cb-icon">🤖</div>
+        <div class="cb-name">AI Insights</div>
+        <div class="cb-items">Sentiment NLP<br/>Price Analytics<br/>Market Trends</div>
+      </div>
+      <div class="core-box red">
+        <div class="cb-icon">🗄️</div>
+        <div class="cb-name">Realtime DB</div>
+        <div class="cb-items">PostgreSQL<br/>Supabase Live<br/>RLS Security</div>
+      </div>
+      <div class="core-box pink">
+        <div class="cb-icon">🚀</div>
+        <div class="cb-name">Token Launchpad</div>
+        <div class="cb-items">Token Creation<br/>Move Contracts<br/>Metadata Store</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER LEGEND -->
+  <div class="footer-bar">
+    <div class="legend-item"><div class="legend-dot" style="background:#6d28d9"></div>Frontend</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#059669"></div>Auth / Middleware</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#2563eb"></div>Backend Services</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#b45309"></div>Database</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7e22ce"></div>Blockchain / Aptos</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#db2777"></div>Integrations</div>
+    <div style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;color:#334155;">
+      github.com/Blaze-Trade/Blazeit · github.com/Blaze-Trade/blaze-contracts
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
